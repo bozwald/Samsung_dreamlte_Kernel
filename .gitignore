@@ -117,5 +117,9 @@ all.config
 # fetched Android config fragments
 android/configs/android-*.cfg
 
+# platform specific
+scripts/rkp_cfp/common.pyc
+scripts/rkp_cfp/tmp/
+
 # custom files
 clean
