@@ -123,3 +123,4 @@ scripts/rkp_cfp/tmp/
 
 # custom files
 clean
+usr/boot.cpio
