@@ -317,13 +317,13 @@ struct devfreq_simple_interactive_data {
 	unsigned int min_sample_time;
 #define INTERACTIVE_HOLD_SAMPLE_TIME	100
 	unsigned int hold_sample_time;
-#define INTERACTIVE_TARGET_LOAD		75
+#define INTERACTIVE_TARGET_LOAD		95
 #define INTERACTIVE_NTARGET_LOAD	1
 	unsigned int *target_load;
 	unsigned int ntarget_load;
-#define INTERACTIVE_GO_HISPEED_LOAD	99
+#define INTERACTIVE_GO_HISPEED_LOAD	40
 	unsigned int go_hispeed_load;
-#define INTERACTIVE_HISPEED_FREQ	1000000
+#define INTERACTIVE_HISPEED_FREQ	0
 	unsigned int hispeed_freq;
 #define INTERACTIVE_TOLERANCE		1
 	unsigned int tolerance;
