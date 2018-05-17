@@ -123,5 +123,5 @@ scripts/rkp_cfp/tmp/
 
 # custom files
 clean
-usr/boot.cpio
 arch/arm64/boot/dtb.img
+scripts/dtbtool_exynos/dtbtool
