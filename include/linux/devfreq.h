@@ -313,17 +313,17 @@ struct devfreq_simple_interactive_data {
 	unsigned int max_load;
 	unsigned long long max_spent;
 	/* governor parameter */
-#define INTERACTIVE_MIN_SAMPLE_TIME	15
+#define INTERACTIVE_MIN_SAMPLE_TIME	100
 	unsigned int min_sample_time;
 #define INTERACTIVE_HOLD_SAMPLE_TIME	100
 	unsigned int hold_sample_time;
 #define INTERACTIVE_TARGET_LOAD		95
-#define INTERACTIVE_NTARGET_LOAD	1
+#define INTERACTIVE_NTARGET_LOAD	10
 	unsigned int *target_load;
 	unsigned int ntarget_load;
-#define INTERACTIVE_GO_HISPEED_LOAD	40
+#define INTERACTIVE_GO_HISPEED_LOAD	95
 	unsigned int go_hispeed_load;
-#define INTERACTIVE_HISPEED_FREQ	0
+#define INTERACTIVE_HISPEED_FREQ
 	unsigned int hispeed_freq;
 #define INTERACTIVE_TOLERANCE		1
 	unsigned int tolerance;
