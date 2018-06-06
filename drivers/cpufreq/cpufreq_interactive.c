@@ -45,7 +45,7 @@
 #include <trace/events/cpufreq_interactive.h>
 #endif
 
-#define CONFIG_DYNAMIC_MODE_SUPPORT
+//#define CONFIG_DYNAMIC_MODE_SUPPORT
 //#define CONFIG_DYNAMIC_MODE_SUPPORT_DEBUG
 
 struct cpufreq_interactive_cpuinfo {
