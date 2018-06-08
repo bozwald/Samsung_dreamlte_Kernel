@@ -15,9 +15,9 @@
 #include "cpufreq_governor.h"
 
 /* Conservative governor macros */
-#define DEF_FREQUENCY_UP_THRESHOLD		(80)
+#define DEF_FREQUENCY_UP_THRESHOLD		(95)
 #define DEF_FREQUENCY_DOWN_THRESHOLD		(20)
-#define DEF_FREQUENCY_STEP			(5)
+#define DEF_FREQUENCY_STEP			(2)
 #define DEF_SAMPLING_DOWN_FACTOR		(1)
 #define MAX_SAMPLING_DOWN_FACTOR		(10)
 
@@ -342,8 +342,7 @@ static int cs_init(struct dbs_data *dbs_data, bool notify)
 	tuners->freq_step = DEF_FREQUENCY_STEP;
 
 	dbs_data->tuners = tuners;
-	dbs_data->min_sampling_rate = MIN_SAMPLING_RATE_RATIO *
-		jiffies_to_usecs(10);
+	dbs_data->min_sampling_rate = jiffies_to_usecs(10);
 
 	if (notify)
 		cpufreq_register_notifier(&cs_cpufreq_notifier_block,

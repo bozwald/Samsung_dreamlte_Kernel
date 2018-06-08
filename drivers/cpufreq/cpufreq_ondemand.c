@@ -373,9 +373,9 @@ static ssize_t store_ignore_nice_load(struct dbs_data *dbs_data,
 	if (input > 1)
 		input = 1;
 
-	if (input == od_tuners->ignore_nice_load) { /* nothing to do */
+	if (input == od_tuners->ignore_nice_load)	/* nothing to do */
 		return count;
-	}
+
 	od_tuners->ignore_nice_load = input;
 
 	/* we need to re-evaluate prev_cpu_idle */
@@ -489,8 +489,7 @@ static int od_init(struct dbs_data *dbs_data, bool notify)
 		tuners->up_threshold = DEF_FREQUENCY_UP_THRESHOLD;
 
 		/* For correct statistics, we need 10 ticks for each measure */
-		dbs_data->min_sampling_rate = MIN_SAMPLING_RATE_RATIO *
-			jiffies_to_usecs(10);
+		dbs_data->min_sampling_rate = jiffies_to_usecs(10);
 	}
 
 	tuners->sampling_down_factor = DEF_SAMPLING_DOWN_FACTOR;

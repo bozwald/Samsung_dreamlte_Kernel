@@ -83,8 +83,8 @@ static struct mutex gov_lock;
 #define DEFAULT_TARGET_LOAD 95
 static unsigned int default_target_loads[] = {DEFAULT_TARGET_LOAD};
 
-#define DEFAULT_TIMER_RATE (100 * USEC_PER_MSEC)
-#define DEFAULT_ABOVE_HISPEED_DELAY DEFAULT_TIMER_RATE
+#define DEFAULT_TIMER_RATE 3333
+#define DEFAULT_ABOVE_HISPEED_DELAY 0
 static unsigned int default_above_hispeed_delay[] = {
 	DEFAULT_ABOVE_HISPEED_DELAY };
 
@@ -97,10 +97,11 @@ static bool hmp_boost;
 
 struct cpufreq_interactive_tunables {
 	int usage_count;
-	/* Hi speed to bump to from lo speed when load burst (default max) */
+	/* Hi speed to bump to from lo speed when load burst */
+#define DEFAULT_HISPEED_FREQ 0
 	unsigned int hispeed_freq;
 	/* Go to hi speed when CPU load at or above this value. */
-#define DEFAULT_GO_HISPEED_LOAD 95
+#define DEFAULT_GO_HISPEED_LOAD 0
 	unsigned long go_hispeed_load;
 	/* Target load. Lower values result in higher CPU speeds. */
 	spinlock_t target_loads_lock;
@@ -110,7 +111,7 @@ struct cpufreq_interactive_tunables {
 	 * The minimum amount of time to spend at a frequency before we can ramp
 	 * down.
 	 */
-#define DEFAULT_MIN_SAMPLE_TIME (100 * USEC_PER_MSEC)
+#define DEFAULT_MIN_SAMPLE_TIME (80 * USEC_PER_MSEC)
 	unsigned long min_sample_time;
 	/*
 	 * The sample rate of the timer used to increase frequency
@@ -134,7 +135,7 @@ struct cpufreq_interactive_tunables {
 	 * Max additional time to wait in idle, beyond timer_rate, at speeds
 	 * above minimum before wakeup to reduce speed, or -1 if unnecessary.
 	 */
-#define DEFAULT_TIMER_SLACK (4 * DEFAULT_TIMER_RATE)
+#define DEFAULT_TIMER_SLACK 13333
 	int timer_slack_val;
 	bool io_is_busy;
 
@@ -1631,6 +1632,7 @@ static int cpufreq_governor_interactive(struct cpufreq_policy *policy,
 			tunables->above_hispeed_delay = default_above_hispeed_delay;
 			tunables->nabove_hispeed_delay =
 				ARRAY_SIZE(default_above_hispeed_delay);
+			tunables->hispeed_freq = DEFAULT_HISPEED_FREQ;
 			tunables->go_hispeed_load = DEFAULT_GO_HISPEED_LOAD;
 			tunables->target_loads = default_target_loads;
 			tunables->ntarget_loads = ARRAY_SIZE(default_target_loads);
@@ -1724,11 +1726,11 @@ static int cpufreq_governor_interactive(struct cpufreq_policy *policy,
 
 		freq_table = cpufreq_frequency_get_table(policy->cpu);
 		if (!tunables->hispeed_freq)
-			tunables->hispeed_freq = policy->max;
+			tunables->hispeed_freq = DEFAULT_HISPEED_FREQ;
 #ifdef CONFIG_DYNAMIC_MODE_SUPPORT
 		for (j = 0; j < MAX_PARAM_SET; j++) {
 			if (!tunables->hispeed_freq_set[j])
-				tunables->hispeed_freq_set[j] = policy->max;
+				tunables->hispeed_freq_set[j] = DEFAULT_HISPEED_FREQ;
 		}
 #endif
 		for_each_cpu(j, policy->cpus) {
