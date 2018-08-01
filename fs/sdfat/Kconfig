@@ -3,8 +3,8 @@ config SDFAT_FS
 	default y
 	select NLS
 	select NLS_UTF8
-	select NLS_CODEPAGE_437
-	select NLS_ISO8859_1
+	select NLS_CODEPAGE_850
+	select NLS_ISO8859_15
 	help
 	  If you want to use the sdFAT file system, then you must say Y or M
 	  here to inlucde sdFAT support.
