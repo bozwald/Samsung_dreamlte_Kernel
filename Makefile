@@ -255,8 +255,8 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/x86/ -e s/x86_64/x86/ \
 #ARCH		?= $(SUBARCH)
 #CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
 ARCH            ?= arm64
-# CROSS_COMPILE   ?= ../gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-
-CROSS_COMPILE   ?= ../aarch64-linux-android-4.9/bin/aarch64-linux-android-
+#CROSS_COMPILE   ?= ../aarch64-linux-android-4.9/bin/aarch64-linux-androidkernel-
+CROSS_COMPILE   ?= ../gcc-linaro-7.2.1-2017.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
 
 # Architecture as present in compile.h
 UTS_MACHINE 	:= $(ARCH)
@@ -304,8 +304,16 @@ CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
 
 HOSTCC       = gcc
 HOSTCXX      = g++
-HOSTCFLAGS   := -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer -std=gnu89
-HOSTCXXFLAGS = -O2
+HOSTCFLAGS   := -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 \
+		-fomit-frame-pointer -std=gnu89 -m64 \
+		-Werror=return-type -fno-strict-aliasing -fno-strict-overflow \
+		-DNDEBUG -pipe -march=core2 -mtune=core2 -mhard-float \
+		-mfpmath=sse -ftree-vectorize
+
+HOSTCXXFLAGS := -O2 -fomit-frame-pointer \
+		-Werror=return-type -fno-strict-aliasing -fno-strict-overflow \
+		-DNDEBUG -pipe -m64 -march=core2 -mtune=core2 -mhard-float \
+		-mfpmath=sse -ftree-vectorize
 
 ifeq ($(shell $(HOSTCC) -v 2>&1 | grep -c "clang version"), 1)
 HOSTCFLAGS  += -Wno-unused-value -Wno-unused-parameter \
@@ -409,8 +417,16 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
-		   -Werror \
-		   -std=gnu89 $(call cc-option,-fno-PIE)
+		   -Werror=return-type \
+		   -std=gnu89 \
+		   -D_FORTIFY_SOURCE=1 \
+		   -march=armv8-a+crypto+crc \
+		   -mcpu=exynos-m1 \
+		   -mtune=exynos-m1 \
+		   -ftree-vectorize \
+		   -DNDEBUG \
+		   -pipe \
+		   -fdiagnostics-color=auto
 
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
@@ -663,7 +679,7 @@ KBUILD_CFLAGS	+= $(call cc-disable-warning, format-overflow)
 KBUILD_CFLAGS	+= $(call cc-disable-warning, int-in-bool-context)
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
-KBUILD_CFLAGS	+= $(call cc-option,-Oz,-Os)
+KBUILD_CFLAGS	+= -Os
 else
 ifdef CONFIG_PROFILE_ALL_BRANCHES
 KBUILD_CFLAGS	+= -O2
@@ -793,7 +809,7 @@ ifdef CONFIG_DEBUG_INFO
 ifdef CONFIG_DEBUG_INFO_SPLIT
 KBUILD_CFLAGS   += $(call cc-option, -gsplit-dwarf, -g)
 else
-KBUILD_CFLAGS	+= -g
+KBUILD_CFLAGS	+=
 endif
 KBUILD_AFLAGS	+= -Wa,-gdwarf-2
 endif
@@ -844,9 +860,6 @@ KBUILD_CFLAGS	+= $(call cc-option,-fno-strict-overflow)
 
 # Make sure -fstack-check isn't enabled (like gentoo apparently did)
 KBUILD_CFLAGS  += $(call cc-option,-fno-stack-check,)
-
-# conserve stack if available
-KBUILD_CFLAGS   += $(call cc-option,-fconserve-stack)
 
 # disallow errors like 'EXPORT_GPL(foo);' with missing header
 KBUILD_CFLAGS   += $(call cc-option,-Werror=implicit-int)

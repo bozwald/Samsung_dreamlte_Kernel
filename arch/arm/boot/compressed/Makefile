@@ -4,6 +4,8 @@
 # create a compressed vmlinuz image from the original vmlinux
 #
 
+KBUILD_CFLAGS += -fno-stack-protector
+
 OBJS		=
 
 AFLAGS_head.o += -DTEXT_OFFSET=$(TEXT_OFFSET)
@@ -14,9 +16,8 @@ OBJS	+= debug.o
 endif
 FONTC	= $(srctree)/lib/fonts/font_acorn_8x8.c
 
-# string library code (-Os is enforced to keep it much smaller)
 OBJS		+= string.o
-CFLAGS_string.o	:= -Os
+CFLAGS_string.o	:=
 
 ifeq ($(CONFIG_ARM_VIRT_EXT),y)
 OBJS		+= hyp-stub.o
