@@ -28,8 +28,10 @@
 
 #include "sync.h"
 
-#define CREATE_TRACE_POINTS
+//#define CREATE_TRACE_POINTS
+#ifdef CREATE_TRACE_POINTS
 #include "trace/sync.h"
+#endif
 
 static const struct fence_ops android_fence_ops;
 static const struct file_operations sync_fence_fops;
@@ -107,7 +109,9 @@ void sync_timeline_signal(struct sync_timeline *obj)
 	LIST_HEAD(signaled_pts);
 	struct sync_pt *pt, *next;
 
+#ifdef CREATE_TRACE_POINTS
 	trace_sync_timeline(obj);
+#endif
 
 	spin_lock_irqsave(&obj->child_list_lock, flags);
 
@@ -382,13 +386,19 @@ int sync_fence_wait(struct sync_fence *fence, long timeout)
 	else
 		timeout = msecs_to_jiffies(timeout);
 
+#ifdef CREATE_TRACE_POINTS
 	trace_sync_wait(fence, 1);
+#endif
 	for (i = 0; i < fence->num_fences; ++i)
+#ifdef CREATE_TRACE_POINTS
 		trace_sync_pt(fence->cbs[i].sync_pt);
+#endif
 	ret = wait_event_interruptible_timeout(fence->wq,
 					       atomic_read(&fence->status) <= 0,
 					       timeout);
+#ifdef CREATE_TRACE_POINTS
 	trace_sync_wait(fence, 0);
+#endif
 
 	if (ret < 0) {
 		return ret;

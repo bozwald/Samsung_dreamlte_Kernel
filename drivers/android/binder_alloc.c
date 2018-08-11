@@ -29,7 +29,11 @@
 #include <linux/sched.h>
 #include <linux/list_lru.h>
 #include "binder_alloc.h"
+
+//#define CREATE_TRACE_POINTS
+#ifdef CREATE_TRACE_POINTS
 #include "binder_trace.h"
+#endif
 
 struct list_lru binder_alloc_lru;
 
@@ -202,7 +206,9 @@ static int binder_update_page_range(struct binder_alloc *alloc, int allocate,
 	if (end <= start)
 		return 0;
 
+#ifdef CREATE_TRACE_POINTS
 	trace_binder_update_page_range(alloc, allocate, start, end);
+#endif
 
 	if (allocate == 0)
 		goto free_range;
