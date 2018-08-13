@@ -245,19 +245,22 @@ static int binder_update_page_range(struct binder_alloc *alloc, int allocate,
 		page = &alloc->pages[index];
 
 		if (page->page_ptr) {
+#ifdef CREATE_TRACE_POINTS
 			trace_binder_alloc_lru_start(alloc, index);
-
+#endif
 			on_lru = list_lru_del(&binder_alloc_lru, &page->lru);
 			WARN_ON(!on_lru);
-
+#ifdef CREATE_TRACE_POINTS
 			trace_binder_alloc_lru_end(alloc, index);
+#endif
 			continue;
 		}
 
 		if (WARN_ON(!vma))
 			goto err_page_ptr_cleared;
-
+#ifdef CREATE_TRACE_POINTS
 		trace_binder_alloc_page_start(alloc, index);
+#endif
 		page->page_ptr = alloc_page(GFP_KERNEL |
 					    __GFP_HIGHMEM |
 					    __GFP_ZERO);
@@ -290,8 +293,9 @@ static int binder_update_page_range(struct binder_alloc *alloc, int allocate,
 
 		if (index + 1 > alloc->pages_high)
 			alloc->pages_high = index + 1;
-
+#ifdef CREATE_TRACE_POINTS
 		trace_binder_alloc_page_end(alloc, index);
+#endif
 		/* vm_insert_page does not seem to increment the refcount */
 	}
 	if (mm) {
@@ -308,13 +312,14 @@ free_range:
 
 		index = (page_addr - alloc->buffer) / PAGE_SIZE;
 		page = &alloc->pages[index];
-
+#ifdef CREATE_TRACE_POINTS
 		trace_binder_free_lru_start(alloc, index);
-
+#endif
 		ret = list_lru_add(&binder_alloc_lru, &page->lru);
 		WARN_ON(!ret);
-
+#ifdef CREATE_TRACE_POINTS
 		trace_binder_free_lru_end(alloc, index);
+#endif
 		continue;
 
 err_vm_insert_page_failed:
@@ -945,27 +950,28 @@ enum lru_status binder_alloc_free_page(struct list_head *item,
 	spin_unlock(lock);
 
 	if (vma) {
+#ifdef CREATE_TRACE_POINTS
 		trace_binder_unmap_user_start(alloc, index);
-
+#endif
 		zap_page_range(vma,
 			       page_addr +
 			       alloc->user_buffer_offset,
 			       PAGE_SIZE, NULL);
-
+#ifdef CREATE_TRACE_POINTS
 		trace_binder_unmap_user_end(alloc, index);
-
+#endif
 		up_write(&mm->mmap_sem);
 		mmput(mm);
 	}
-
+#ifdef CREATE_TRACE_POINTS
 	trace_binder_unmap_kernel_start(alloc, index);
-
+#endif
 	unmap_kernel_range(page_addr, PAGE_SIZE);
 	__free_page(page->page_ptr);
 	page->page_ptr = NULL;
-
+#ifdef CREATE_TRACE_POINTS
 	trace_binder_unmap_kernel_end(alloc, index);
-
+#endif
 	spin_lock(lock);
 	mutex_unlock(&alloc->mutex);
 	return LRU_REMOVED_RETRY;
