@@ -503,8 +503,8 @@ KBUILD_CFLAGS += -DANDROID_MAJOR_VERSION=$(MAJOR_VERSION)
 SELINUX_DIR=$(shell $(CONFIG_SHELL) $(srctree)/scripts/find_matching_major.sh "$(srctree)" "security/selinux" "$(ANDROID_MAJOR_VERSION)")
 SDCARDFS_DIR=$(shell $(CONFIG_SHELL) $(srctree)/scripts/find_matching_version.sh "$(srctree)" "fs/sdcardfs" "$(ANDROID_VERSION)")
 else
-export ANDROID_VERSION=800
-KBUILD_CFLAGS += -DANDROID_VERSION=800
+export ANDROID_VERSION=800000
+KBUILD_CFLAGS += -DANDROID_VERSION=800000
 export ANDROID_MAJOR_VERSION=o
 KBUILD_CFLAGS += -DANDROID_MAJOR_VERSION=o
 endif
