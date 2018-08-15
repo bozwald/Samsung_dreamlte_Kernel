@@ -122,3 +122,4 @@ scripts/rkp_cfp/tmp/
 clean
 arch/arm64/boot/Image
 *.dtb
+rejects
