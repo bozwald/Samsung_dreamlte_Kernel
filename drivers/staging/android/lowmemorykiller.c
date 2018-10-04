@@ -50,44 +50,20 @@
 #endif
 
 static uint32_t lowmem_debug_level = 0;
-static short lowmem_adj[16] = {
+static short lowmem_adj[6] = {
 	0,
-	100,
-	200,
-	300,
-	400,
-	500,
-	600,
-	700,
-	800,
-	900,
-	901,
-	902,
-	903,
-	904,
-	905,
-	906,
+	1,
+	6,
+	12,
 };
-static int lowmem_adj_size = 16;
-static int lowmem_minfree[16] = {
-	4096,	/* 16MB */
-	6144,	/* 24MB */
-	8192,	/* 32MB */
-	10240,	/* 40MB */
-	12288,	/* 48MB */
-	14336,	/* 56MB */
-	16384,	/* 64MB */
-	18432,	/* 72MB */
-	20480,	/* 80MB */
-	22528,	/* 88MB */
-	24576,	/* 96MB */
-	26624,	/* 104MB */
-	28672,	/* 112MB */
-	30720,	/* 120MB */
-	32768,	/* 128MB */
-	34816,	/* 136MB */
+static int lowmem_adj_size = 4;
+static int lowmem_minfree[6] = {
+	3 * 512,	/* 6MB */
+	2 * 1024,	/* 8MB */
+	4 * 1024,	/* 16MB */
+	16 * 1024,	/* 64MB */
 };
-static int lowmem_minfree_size = 16;
+static int lowmem_minfree_size = 4;
 static uint32_t lowmem_lmkcount = 0;
 
 static unsigned long lowmem_deathpending_timeout;
